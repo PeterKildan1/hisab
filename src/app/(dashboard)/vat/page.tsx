@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Calculator, Info, CheckCircle } from "lucide-react";
-
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 type VATData = {
   vatOnSales: number; vatOnPurchases: number; netVAT: number;
   invoices: Array<{ number: string; customerName: string; date: string; subtotal: number; vatAmount: number; total: number; status: string }>;
@@ -33,9 +33,13 @@ export default function VATPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-6">
+      <OnboardingCard page="vat" />
       <div>
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Calculator className="w-6 h-6 text-blue-600" /> VAT Management</h1>
-        <p className="text-sm text-gray-500 mt-1">Jordan VAT is 16%. You collect it from customers and pay it to the government, minus what you paid on purchases.</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-sm text-gray-500">Jordan VAT is 16%. You collect it from customers and pay it to the government, minus what you paid on purchases.</p>
+          <HelpButton page="vat" />
+        </div>
       </div>
 
       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3 text-sm text-blue-800">

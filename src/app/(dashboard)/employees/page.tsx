@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Users, CheckCircle, Clock, DollarSign } from "lucide-react";
-
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 type SalaryPayment = { id: string; month: string; baseSalary: number; bonus: number; deductions: number; netPaid: number; status: string; paidDate: string | null };
 type Employee = { id: string; name: string; jobTitle: string | null; monthlySalary: number; startDate: string; active: boolean; salaryPayments: SalaryPayment[] };
 
@@ -53,10 +53,14 @@ export default function EmployeesPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="employees" />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Users className="w-6 h-6 text-blue-600" /> Employees & Payroll</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage your team, salaries, and monthly payroll. Estimates based on Jordanian tax law.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Manage your team, salaries, and monthly payroll. Estimates based on Jordanian tax law.</p>
+            <HelpButton page="employees" />
+          </div>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
           <Plus className="w-4 h-4" /> Add Employee

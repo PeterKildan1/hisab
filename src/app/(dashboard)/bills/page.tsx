@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Receipt, CheckCircle, Clock, AlertCircle } from "lucide-react";
-
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 type Bill = {
   id: string; supplierName: string; number: string | null; date: string;
   dueDate: string; status: string; total: number; paidAmount: number; vatAmount: number;
@@ -54,10 +54,14 @@ export default function BillsPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="bills" />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Receipt className="w-6 h-6 text-blue-600" /> Bills & Payables</h1>
-          <p className="text-sm text-gray-500 mt-1">Bills from your suppliers. Track what you owe and when it&apos;s due.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Bills from your suppliers. Track what you owe and when it&apos;s due.</p>
+            <HelpButton page="bills" />
+          </div>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
           <Plus className="w-4 h-4" /> Record Bill

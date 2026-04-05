@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Package, AlertTriangle, TrendingDown, TrendingUp } from "lucide-react";
-
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 type InventoryItem = {
   id: string; name: string; sku: string | null; quantity: number;
   unitCost: number; sellingPrice: number; reorderLevel: number;
@@ -44,10 +44,14 @@ export default function InventoryPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="inventory" />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Package className="w-6 h-6 text-blue-600" /> Inventory</h1>
-          <p className="text-sm text-gray-500 mt-1">Track what you have in stock, its value, and when to reorder.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Track what you have in stock, its value, and when to reorder.</p>
+            <HelpButton page="inventory" />
+          </div>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
           <Plus className="w-4 h-4" /> Add Product

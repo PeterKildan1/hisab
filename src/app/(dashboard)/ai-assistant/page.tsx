@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Bot, Send, RefreshCw, Sparkles } from "lucide-react";
-
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 type Message = { role: "user" | "assistant"; content: string; timestamp: Date };
 
 const SUGGESTIONS = [
@@ -65,10 +65,14 @@ export default function AIAssistantPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-56px)] md:h-screen p-6 max-w-4xl mx-auto gap-6">
+    <div className="flex flex-col h-[calc(100vh-56px)] md:h-screen p-6 max-w-4xl mx-auto gap-4">
+      <OnboardingCard page="ai-assistant" />
       <div>
         <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Bot className="w-6 h-6 text-blue-600" /> AI Assistant</h1>
-        <p className="text-sm text-gray-500 mt-1">Ask anything about your business finances in English or Arabic. Your data stays private.</p>
+        <div className="flex items-center gap-2 mt-1">
+          <p className="text-sm text-gray-500">Ask anything about your business finances in English or Arabic.</p>
+          <HelpButton page="ai-assistant" />
+        </div>
       </div>
 
       {/* Monthly summary */}

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
-
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 type LoanPayment = { id: string; dueDate: string; amount: number; principal: number; interest: number; status: string; paidDate: string | null };
 type Loan = { id: string; lenderName: string; amount: number; interestRate: number; startDate: string; termMonths: number; liquidity: string; notes: string | null; payments: LoanPayment[] };
 
@@ -43,10 +43,14 @@ export default function LoansPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="loans" />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><CreditCard className="w-6 h-6 text-blue-600" /> Loans & Financing</h1>
-          <p className="text-sm text-gray-500 mt-1">Track all business loans, payment schedules, and remaining balances.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Track all business loans, payment schedules, and remaining balances.</p>
+            <HelpButton page="loans" />
+          </div>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
           <Plus className="w-4 h-4" /> Add Loan

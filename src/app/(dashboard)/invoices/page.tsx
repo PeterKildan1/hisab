@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, FileText, CheckCircle, Clock, AlertCircle, DollarSign } from "lucide-react";
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 
 type InvoiceItem = { description: string; quantity: number; unitPrice: number };
 type Invoice = {
@@ -57,10 +58,14 @@ export default function InvoicesPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="invoices" />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><FileText className="w-6 h-6 text-blue-600" /> Invoices & Receivables</h1>
-          <p className="text-sm text-gray-500 mt-1">Bills you send to customers. 16% VAT applied automatically per Jordanian law.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Bills you send to customers. 16% VAT applied automatically per Jordanian law.</p>
+            <HelpButton page="invoices" />
+          </div>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
           <Plus className="w-4 h-4" /> New Invoice

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { Plus, Search, Camera, Check, ArrowLeftRight } from "lucide-react";
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 
 type Account = { id: string; name: string; type: string };
 type Transaction = {
@@ -73,10 +74,14 @@ export default function TransactionsPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="transactions" />
       <div className="flex items-start justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><ArrowLeftRight className="w-6 h-6 text-blue-600" /> Transactions</h1>
-          <p className="text-sm text-gray-500 mt-1">Every financial movement in your business. Record manually or scan a receipt.</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Every financial movement in your business. Record manually or scan a receipt.</p>
+            <HelpButton page="transactions" />
+          </div>
         </div>
         <div className="flex gap-2">
           <button onClick={() => fileRef.current?.click()} disabled={scanning}

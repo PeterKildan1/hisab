@@ -16,6 +16,8 @@ model User {
   phone          String?
   language       String    @default("en")
   currency       String    @default("JOD")
+  accountType    String    @default("SmallBusiness")
+  logoUrl        String?
   createdAt      DateTime  @default(now())
 
   accounts       Account[]

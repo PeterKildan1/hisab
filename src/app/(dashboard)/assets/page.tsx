@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Plus, Building2, Trash2 } from "lucide-react";
+import OnboardingCard, { HelpButton } from "@/components/OnboardingCard";
 import { calculateDepreciation } from "@/lib/utils";
 
 type FixedAsset = {
@@ -42,10 +43,14 @@ export default function AssetsPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
+      <OnboardingCard page="assets" />
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2"><Building2 className="w-6 h-6 text-blue-600" /> Fixed Assets & Depreciation</h1>
-          <p className="text-sm text-gray-500 mt-1">Equipment and property your business owns. Depreciation is calculated automatically (straight-line method).</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-gray-500">Equipment and property your business owns. Depreciation is calculated automatically.</p>
+            <HelpButton page="assets" />
+          </div>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700">
           <Plus className="w-4 h-4" /> Add Asset

@@ -28,7 +28,7 @@ const DEFAULT_ACCOUNTS = [
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password, businessName, ownerName, phone } = await req.json();
+    const { email, password, businessName, ownerName, phone, accountType } = await req.json();
 
     if (!email || !password || !businessName || !ownerName) {
       return NextResponse.json({ error: "All fields required" }, { status: 400 });
@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
         businessName,
         ownerName,
         phone,
+        accountType: accountType || "SmallBusiness",
       },
     });
 
