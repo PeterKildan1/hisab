@@ -1,0 +1,287 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  password       String
+  businessName   String
+  ownerName      String
+  phone          String?
+  language       String    @default("en")
+  currency       String    @default("JOD")
+  createdAt      DateTime  @default(now())
+
+  accounts       Account[]
+  transactions   Transaction[]
+  invoices       Invoice[]
+  bills          Bill[]
+  inventoryItems InventoryItem[]
+  employees      Employee[]
+  loans          Loan[]
+  fixedAssets    FixedAsset[]
+  vatPeriods     VATEntry[]
+  chatMessages   ChatMessage[]
+}
+
+model Account {
+  id            String    @id @default(cuid())
+  userId        String
+  name          String
+  type          String    // Asset, Liability, Equity, Income, Expense
+  subType       String?   // Cash, Receivable, Inventory, FixedAsset, Prepaid, Payable, Loan, TaxOwed, SalaryOwed, Credit
+  liquidity     String?   // ShortTerm, MidTerm, LongTerm
+  balance       Float     @default(0)
+  isSystem      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  debitLines    JournalLine[] @relation("DebitAccount")
+  creditLines   JournalLine[] @relation("CreditAccount")
+
+  @@index([userId])
+}
+
+model Transaction {
+  id            String    @id @default(cuid())
+  userId        String
+  date          DateTime
+  description   String
+  reference     String?
+  receiptUrl    String?
+  reconciled    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  journalLines  JournalLine[]
+
+  @@index([userId])
+}
+
+model JournalLine {
+  id              String      @id @default(cuid())
+  transactionId   String
+  debitAccountId  String?
+  creditAccountId String?
+  amount          Float
+  description     String?
+
+  transaction     Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  debitAccount    Account?    @relation("DebitAccount", fields: [debitAccountId], references: [id])
+  creditAccount   Account?    @relation("CreditAccount", fields: [creditAccountId], references: [id])
+
+  @@index([transactionId])
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  userId        String
+  number        String
+  customerName  String
+  customerEmail String?
+  customerPhone String?
+  date          DateTime
+  dueDate       DateTime
+  status        String    @default("unpaid") // unpaid, partial, paid, overdue
+  subtotal      Float
+  vatAmount     Float
+  total         Float
+  paidAmount    Float     @default(0)
+  notes         String?
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         InvoiceItem[]
+
+  @@index([userId])
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  description String
+  quantity    Float
+  unitPrice   Float
+  vatRate     Float   @default(16)
+  total       Float
+
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+}
+
+model Bill {
+  id            String    @id @default(cuid())
+  userId        String
+  number        String?
+  supplierName  String
+  date          DateTime
+  dueDate       DateTime
+  status        String    @default("unpaid") // unpaid, partial, paid, overdue
+  subtotal      Float
+  vatAmount     Float
+  total         Float
+  paidAmount    Float     @default(0)
+  notes         String?
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         BillItem[]
+
+  @@index([userId])
+}
+
+model BillItem {
+  id          String  @id @default(cuid())
+  billId      String
+  description String
+  quantity    Float
+  unitPrice   Float
+  total       Float
+
+  bill        Bill    @relation(fields: [billId], references: [id], onDelete: Cascade)
+}
+
+model InventoryItem {
+  id            String    @id @default(cuid())
+  userId        String
+  name          String
+  sku           String?
+  quantity      Float     @default(0)
+  unitCost      Float
+  sellingPrice  Float
+  reorderLevel  Float     @default(0)
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movements     StockMovement[]
+
+  @@index([userId])
+}
+
+model StockMovement {
+  id              String        @id @default(cuid())
+  inventoryItemId String
+  type            String        // in, out, adjustment
+  quantity        Float
+  unitCost        Float?
+  reason          String?
+  date            DateTime      @default(now())
+
+  item            InventoryItem @relation(fields: [inventoryItemId], references: [id], onDelete: Cascade)
+}
+
+model Employee {
+  id              String    @id @default(cuid())
+  userId          String
+  name            String
+  jobTitle        String?
+  monthlySalary   Float
+  startDate       DateTime
+  nationalId      String?
+  phone           String?
+  bankAccount     String?
+  active          Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  salaryPayments  SalaryPayment[]
+
+  @@index([userId])
+}
+
+model SalaryPayment {
+  id              String    @id @default(cuid())
+  employeeId      String
+  month           String    // YYYY-MM
+  baseSalary      Float
+  bonus           Float     @default(0)
+  deductions      Float     @default(0)
+  netPaid         Float
+  paidDate        DateTime?
+  status          String    @default("pending") // pending, paid
+  notes           String?
+  createdAt       DateTime  @default(now())
+
+  employee        Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model Loan {
+  id              String    @id @default(cuid())
+  userId          String
+  lenderName      String
+  amount          Float
+  interestRate    Float
+  startDate       DateTime
+  termMonths      Int
+  liquidity       String    @default("LongTerm") // ShortTerm, MidTerm, LongTerm
+  notes           String?
+  createdAt       DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payments        LoanPayment[]
+
+  @@index([userId])
+}
+
+model LoanPayment {
+  id          String    @id @default(cuid())
+  loanId      String
+  dueDate     DateTime
+  amount      Float
+  principal   Float
+  interest    Float
+  paidDate    DateTime?
+  status      String    @default("pending") // pending, paid
+
+  loan        Loan      @relation(fields: [loanId], references: [id], onDelete: Cascade)
+}
+
+model FixedAsset {
+  id              String    @id @default(cuid())
+  userId          String
+  name            String
+  category        String    // Equipment, Furniture, Vehicle, Property, Other
+  purchasePrice   Float
+  purchaseDate    DateTime
+  usefulLifeYears Int
+  residualValue   Float     @default(0)
+  notes           String?
+  createdAt       DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VATEntry {
+  id            String    @id @default(cuid())
+  userId        String
+  period        String    // YYYY-Q1, YYYY-Q2, etc
+  vatCollected  Float     @default(0)
+  vatPaid       Float     @default(0)
+  netVAT        Float     @default(0)
+  filed         Boolean   @default(false)
+  filedDate     DateTime?
+  createdAt     DateTime  @default(now())
+
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ChatMessage {
+  id          String    @id @default(cuid())
+  userId      String
+  role        String    // user, assistant
+  content     String
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
